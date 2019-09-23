@@ -19,7 +19,9 @@ class Deck:
         random.shuffle(self.deck)
 
     def pushable(self, card):
-        if len(self.deck) == 0:
+        if not type(card.number) == int:
+            return False
+        if len(self.deck) <= 0:
             return True
         top = self.deck[-1].number
         if self.ascend:
@@ -42,14 +44,21 @@ class Deck:
         if len(self.deck) != 0:
             return self.deck.pop()
         else:
-            return '-'
+            return Card(" ")
+
+    def stack(self):
+        pre = self.deck
+        a = sorted(self.deck, key=lambda x: x.number)
+        print ([c.number for c in a])
+        self.deck = pre
+
 
 class Game:
     def __init__(self):
         self.decks = [Deck(True), Deck(True), Deck(False), Deck(False)]
         self.pile = Deck(None)
         self.hand = Deck(None)
-        for num in range(1,101):
+        for num in range(1,100):
             c = Card(num)
             self.pile.deck.append(c)
         self.pile.shuffle()
@@ -69,7 +78,9 @@ class Game:
         os.system('clear') #clear screen
         head = [d.top() for d in self.decks]
         hand = [str(c.number) for c in self.hand.deck]
-        print ("Cards Left: {:2d}\t Decks".format(len(self.hand.deck) + len(self.pile.deck)))
+        cardsleft = len(self.hand.deck) + len(self.pile.deck)
+        print ("Cards Left: {:2d} \t\t Hundred - Michael Kwan".format(cardsleft) )
+        print ("\t\t Decks")
         print ("\t/---\ /---\ /---\ /---\ ")
         print ("\t|   | |   | |   | |   | ")
         print ("\t|   | |   | |   | |   | ")
@@ -90,7 +101,7 @@ class Game:
         print ("\t|{:3s}| |{:3s}| |{:3s}| |{:3s}|".format(hand[4], hand[5], hand[6], hand[7]))
 
     def checkmoves(self):
-        if len(self.pile.deck) + len(self.pile.deck) == 0:
+        if len(self.pile.deck) + len(self.hand.deck) == 0:
             return False
 
         for card in self.hand.deck:
@@ -102,6 +113,9 @@ class Game:
 
     def move(self, position, pile):
         current = self.hand.deck[position-1]
+        if type(current.number) == str:
+            print ("Hand position is empty")
+            return False
         if self.decks[pile-1].pushable(current):
             print ("Moving {0} from position {1} to pile {2}".format(current.number, position, pile))
             self.decks[pile-1].push(current)
@@ -112,13 +126,11 @@ class Game:
             return False
 
     def drawend(self):
-        time.sleep(5)
-        if len(self.pile.deck) + len(self.pile.deck) == 0:
+        if len(self.pile.deck) + len(self.hand.deck) == 0:
             os.system("clear")
             print ("\n\n\n")
             print ("You Win!")
         else:
-            print ("\n\n\n")
             print ("Sorry, no more moves.")
 
 def intro():
@@ -142,12 +154,20 @@ def play():
             g.draw()
             while True:
                 move = input("What is your move? \n")
-                if move[0] in [str(i) for i in range(1,9)] and move[1] in [str(i) for i in range(1,5)]:
+                if len(move) == 2 and move[0] in [str(i) for i in range(1,9)] and move[1] in [str(i) for i in range(1,5)]:
                     status = g.move(int(move[0]), int(move[1]))
                     if status:
                         break
+                elif move == 's':
+                    g.pile.stack()
+                    status = ("Press any key to continue")
                 elif move == 'q':
                     sys.exit()
+                elif move == 'r':
+                    play()
+                else:
+                    print("Invalid Command")
+                g.draw()
         g.draw()
         g.drawend()
 
