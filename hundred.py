@@ -102,6 +102,7 @@ class Game:
 
     def checkmoves(self):
         if len(self.pile.deck) + len(self.hand.deck) == 0:
+            print("No more cards to place")
             return False
 
         for card in self.hand.deck:
