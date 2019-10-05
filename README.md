@@ -1,6 +1,9 @@
 # hundred
-Submission for Kleiner Perkins 2020 Engineering Fellow
+Submission for 2020 Kleiner Perkins Engineering Fellow PRogram
 
-## Installation Steps
-1. Download ```hundred.py```
+## Installation and Execution
+1. Clone repository
 2. Run ```python3 hundred.py```
+3. For testing, run ```pytest```
+
+
